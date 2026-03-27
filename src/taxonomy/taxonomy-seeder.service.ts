@@ -1,10 +1,36 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { Category } from './entities/category.entity';
 import { Tag } from './entities/tag.entity';
 import { CategoryTag } from './entities/category-tag.entity';
+import { User, UserRole, UserStatus } from '../users/entities/user.entity';
 import { SEED_CATEGORIES, getAllSeedTags } from '../seed-categories';
+
+interface SeedUser {
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
+const SEED_USERS: SeedUser[] = [
+  {
+    email: 'admin@guidestack.com',
+    password: 'Admin@123',
+    role: UserRole.ADMIN,
+  },
+  {
+    email: 'editor@guidestack.com',
+    password: 'Editor@123',
+    role: UserRole.EDITOR,
+  },
+  {
+    email: 'author@guidestack.com',
+    password: 'Author@123',
+    role: UserRole.AUTHOR,
+  },
+];
 
 @Injectable()
 export class TaxonomySeederService implements OnApplicationBootstrap {
@@ -17,19 +43,51 @@ export class TaxonomySeederService implements OnApplicationBootstrap {
     private tagRepository: Repository<Tag>,
     @InjectRepository(CategoryTag)
     private categoryTagRepository: Repository<CategoryTag>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async onApplicationBootstrap() {
+    await this.seedUsers();
+
     const categoryCount = await this.categoryRepository.count();
     if (categoryCount > 0) {
       this.logger.log(
-        `Skipping seed: ${categoryCount} categories already exist.`,
+        `Skipping category seed: ${categoryCount} categories already exist.`,
       );
       return;
     }
 
     this.logger.log('No categories found. Seeding niche categories and tags...');
     await this.seed();
+  }
+
+  /**
+   * Seed default admin, editor, and author users if they don't already exist.
+   */
+  async seedUsers() {
+    for (const seedUser of SEED_USERS) {
+      const existing = await this.userRepository.findOne({
+        where: { email: seedUser.email },
+      });
+
+      if (existing) {
+        this.logger.log(`User already exists: ${seedUser.email} (${seedUser.role})`);
+        continue;
+      }
+
+      const passwordHash = await bcrypt.hash(seedUser.password, 10);
+      const user = this.userRepository.create({
+        email: seedUser.email,
+        passwordHash,
+        role: seedUser.role,
+        status: UserStatus.ACTIVE,
+      });
+      await this.userRepository.save(user);
+      this.logger.log(`Seeded user: ${seedUser.email} (${seedUser.role})`);
+    }
+
+    this.logger.log('User seeding complete!');
   }
 
   async seed() {
