@@ -122,7 +122,7 @@ export class EmailService {
   /**
    * Generate HTML email content for blog notification
    */
-  private generateBlogNotificationHtml(blogDetails: {
+  generateBlogNotificationHtml(blogDetails: {
     id: number;
     title: string;
     slug: string;
@@ -137,10 +137,22 @@ export class EmailService {
   }): string {
     const publishedDate = new Date(blogDetails.publishedAt).toLocaleDateString(
       'en-US',
-      { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' },
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      },
     );
-    const appName = this.configService.get<string>('SITE_NAME', 'Blog Platform');
-    const baseUrl = this.configService.get<string>('SITE_URL', 'http://localhost:3000');
+    const appName = this.configService.get<string>(
+      'SITE_NAME',
+      'Blog Platform',
+    );
+    const baseUrl = this.configService.get<string>(
+      'SITE_URL',
+      'http://localhost:3000',
+    );
     const blogUrl = `${baseUrl}/blog/${blogDetails.slug}`;
 
     const tocHtml = this.renderTocHtml(blogDetails.tableOfContents ?? []);
@@ -190,7 +202,9 @@ export class EmailService {
           <tr>
             <td style="background:#ffffff;padding:36px 40px;">
 
-              ${blogDetails.topic ? `
+              ${
+                blogDetails.topic
+                  ? `
               <!-- Topic pill -->
               <table cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
                 <tr>
@@ -200,7 +214,9 @@ export class EmailService {
                   </td>
                 </tr>
               </table>
-              ` : ''}
+              `
+                  : ''
+              }
 
               ${tocHtml}
 
@@ -331,7 +347,7 @@ export class EmailService {
   /**
    * Generate plain text email content for blog notification
    */
-  private generateBlogNotificationText(blogDetails: {
+  generateBlogNotificationText(blogDetails: {
     id: number;
     title: string;
     slug: string;
@@ -345,8 +361,14 @@ export class EmailService {
     tableOfContents?: { text: string; level: number }[];
   }): string {
     const publishedDate = new Date(blogDetails.publishedAt).toLocaleString();
-    const appName = this.configService.get<string>('SITE_NAME', 'Blog Platform');
-    const baseUrl = this.configService.get<string>('SITE_URL', 'http://localhost:3000');
+    const appName = this.configService.get<string>(
+      'SITE_NAME',
+      'Blog Platform',
+    );
+    const baseUrl = this.configService.get<string>(
+      'SITE_URL',
+      'http://localhost:3000',
+    );
 
     const tocText =
       blogDetails.tableOfContents && blogDetails.tableOfContents.length > 0

@@ -18,6 +18,7 @@ import { Tag } from '../taxonomy/entities/tag.entity';
 import { BlogCategory } from '../taxonomy/entities/blog-category.entity';
 import { BlogTag } from '../taxonomy/entities/blog-tag.entity';
 import { User } from '../users/entities/user.entity';
+import { Subscriber } from '../newsletter/entities/subscriber.entity';
 import { AiModule } from '../ai/ai.module';
 import { EmailModule } from '../email/email.module';
 import { MediaModule } from '../media/media.module';
@@ -37,6 +38,7 @@ import { MediaModule } from '../media/media.module';
       BlogCategory,
       BlogTag,
       User,
+      Subscriber,
     ]),
     AiModule,
     EmailModule,

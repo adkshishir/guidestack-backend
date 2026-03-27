@@ -1,9 +1,16 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression, Interval } from '@nestjs/schedule';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { BlogGenerationService } from './blog-generation.service';
 import { BlogTaskService } from './blog-task.service';
 import { IntelligentBlogGenerationService } from './intelligent-blog-generation.service';
+import { EmailService } from '../email/email.service';
+import {
+  Subscriber,
+  SubscriberStatus,
+} from '../newsletter/entities/subscriber.entity';
 
 @Injectable()
 export class BlogSchedulerService implements OnModuleInit {
@@ -14,16 +21,23 @@ export class BlogSchedulerService implements OnModuleInit {
     private readonly blogTaskService: BlogTaskService,
     private readonly intelligentBlogGenerationService: IntelligentBlogGenerationService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
+    @InjectRepository(Subscriber)
+    private readonly subscriberRepository: Repository<Subscriber>,
   ) {}
 
   onModuleInit() {}
 
   /**
    * Interval job to automatically generate blogs
-   * Runs once per day at 1 AM
+   * Runs twice a week: Monday and Thursday at 1 AM
+   * Cron: 0 1 * * 1,4 (Monday=1, Thursday=4)
    * Can be disabled via AUTO_BLOG_GENERATION_ENABLED environment variable
    */
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron('0 1 * * 1,4', {
+    name: 'blog-generation',
+    timeZone: 'UTC',
+  })
   async handleBlogGeneration() {
     this.logger.log(
       'Interval task triggered - checking if blog generation is enabled...',
@@ -73,7 +87,8 @@ export class BlogSchedulerService implements OnModuleInit {
       this.logger.log(
         `Successfully generated blog post: ${blogPost.title} (ID: ${blogPost.id}) from task: "${activeTask.title}"`,
       );
-
+      // Send notifications to admin and subscribers
+      await this.notifyAdminAndSubscribers(blogPost);
       // Deactivate the task after successful generation
       await this.blogTaskService.deactivate(activeTask.id);
       this.logger.log(`Task "${activeTask.title}" has been deactivated.`);
@@ -136,6 +151,64 @@ export class BlogSchedulerService implements OnModuleInit {
   private async getActiveTaskCount(): Promise<number> {
     const activeTasks = await this.blogTaskService.findAll(true);
     return activeTasks.length;
+  }
+
+  /**
+   * Send blog notification to both admin and all verified subscribers
+   */
+  private async notifyAdminAndSubscribers(blogPost: any): Promise<void> {
+    try {
+      // Prepare blog details for notification
+      const blogDetails = {
+        id: blogPost.id,
+        title: blogPost.title,
+        slug: blogPost.slug,
+        excerpt: blogPost.excerpt,
+        author: blogPost.author?.fullName || 'AI System',
+        publishedAt: blogPost.publishedAt,
+        readingTime: blogPost.blogContent?.readingTime || 5,
+        wordCount: blogPost.blogContent?.wordCount || 0,
+        faqCount: blogPost.faqCount || 0,
+        topic: blogPost.topic,
+        tableOfContents: blogPost.blogContent?.tableOfContents,
+      };
+
+      // Get admin email
+      const adminEmail = this.configService.get<string>('MAIL_ADMIN');
+
+      // Get all verified subscribers
+      const subscribers = await this.subscriberRepository.find({
+        where: { status: SubscriberStatus.VERIFIED },
+      });
+
+      const subscriberEmails = subscribers.map((sub) => sub.email);
+
+      // Combine admin and subscriber emails
+      const allRecipients = adminEmail
+        ? [adminEmail, ...subscriberEmails]
+        : subscriberEmails;
+
+      if (allRecipients.length === 0) {
+        this.logger.warn(
+          'No admin or verified subscribers found. Skipping email notification.',
+        );
+        return;
+      }
+
+      // Send email to all recipients
+      const subject = `✍️ New Article Published: ${blogDetails.title}`;
+      const html = this.emailService.generateBlogNotificationHtml(blogDetails);
+      const text = this.emailService.generateBlogNotificationText(blogDetails);
+
+      await this.emailService.sendEmail(allRecipients, subject, html, text);
+
+      this.logger.log(
+        `Email notification sent to ${allRecipients.length} recipient(s): admin + ${subscriberEmails.length} subscriber(s)`,
+      );
+    } catch (error) {
+      this.logger.error(`Failed to send blog notification: ${error.message}`);
+      // Don't throw - we don't want to crash the scheduler
+    }
   }
 
   /**
