@@ -102,6 +102,7 @@ export class EmailService {
     wordCount: number;
     faqCount: number;
     topic?: string;
+    tableOfContents?: { text: string; level: number }[];
   }): Promise<void> {
     const adminEmail = this.configService.get<string>('MAIL_ADMIN');
     if (!adminEmail) {
@@ -111,7 +112,7 @@ export class EmailService {
       return;
     }
 
-    const subject = `New Blog Post Generated: ${blogDetails.title}`;
+    const subject = `✍️ New Article Published: ${blogDetails.title}`;
     const html = this.generateBlogNotificationHtml(blogDetails);
     const text = this.generateBlogNotificationText(blogDetails);
 
@@ -132,146 +133,199 @@ export class EmailService {
     wordCount: number;
     faqCount: number;
     topic?: string;
+    tableOfContents?: { text: string; level: number }[];
   }): string {
-    const publishedDate = new Date(blogDetails.publishedAt).toLocaleString();
-    const appName = this.configService.get<string>('APP_NAME', 'Blog Platform');
-    const baseUrl = this.configService.get<string>(
-      'APP_URL',
-      'http://localhost:3000',
+    const publishedDate = new Date(blogDetails.publishedAt).toLocaleDateString(
+      'en-US',
+      { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' },
     );
+    const appName = this.configService.get<string>('SITE_NAME', 'Blog Platform');
+    const baseUrl = this.configService.get<string>('SITE_URL', 'http://localhost:3000');
+    const blogUrl = `${baseUrl}/blog/${blogDetails.slug}`;
+
+    const tocHtml = this.renderTocHtml(blogDetails.tableOfContents ?? []);
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Article Published</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:12px 12px 0 0;padding:36px 40px;text-align:center;">
+              <p style="margin:0 0 8px 0;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;">AI-Generated Article</p>
+              <h1 style="margin:0;font-size:24px;font-weight:700;color:#ffffff;line-height:1.3;">${this.escapeHtml(blogDetails.title)}</h1>
+              <p style="margin:16px 0 0 0;font-size:14px;color:#cbd5e1;">${this.escapeHtml(blogDetails.excerpt)}</p>
+            </td>
+          </tr>
+
+          <!-- Stats bar -->
+          <tr>
+            <td style="background:#3b82f6;padding:14px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="color:#ffffff;font-size:13px;font-weight:600;">
+                    📖 ${blogDetails.readingTime} min read
+                    &nbsp;&nbsp;·&nbsp;&nbsp;
+                    📝 ${blogDetails.wordCount.toLocaleString()} words
+                    &nbsp;&nbsp;·&nbsp;&nbsp;
+                    ❓ ${blogDetails.faqCount} FAQs
+                    &nbsp;&nbsp;·&nbsp;&nbsp;
+                    🗓 ${publishedDate}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background:#ffffff;padding:36px 40px;">
+
+              ${blogDetails.topic ? `
+              <!-- Topic pill -->
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 16px;">
+                    <p style="margin:0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#3b82f6;">Generated Topic</p>
+                    <p style="margin:4px 0 0 0;font-size:14px;color:#1e3a5f;">${this.escapeHtml(blogDetails.topic)}</p>
+                  </td>
+                </tr>
+              </table>
+              ` : ''}
+
+              ${tocHtml}
+
+              <!-- Meta details -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e2e8f0;margin-top:28px;padding-top:24px;">
+                <tr>
+                  <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:13px;color:#64748b;font-weight:600;width:120px;">Author</td>
+                        <td style="font-size:13px;color:#334155;">${this.escapeHtml(blogDetails.author)}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:13px;color:#64748b;font-weight:600;width:120px;">Post ID</td>
+                        <td style="font-size:13px;color:#334155;">#${blogDetails.id}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:13px;color:#64748b;font-weight:600;width:120px;">Slug</td>
+                        <td style="font-size:13px;color:#334155;font-family:monospace;">${this.escapeHtml(blogDetails.slug)}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA button -->
+              <table cellpadding="0" cellspacing="0" style="margin-top:32px;">
+                <tr>
+                  <td align="center" style="border-radius:8px;background:#1e293b;">
+                    <a href="${blogUrl}" target="_blank"
+                       style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;letter-spacing:0.3px;">
+                      Read the Full Article →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8fafc;border-top:1px solid #e2e8f0;border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#94a3b8;">
+                Automated notification from <strong>${this.escapeHtml(appName)}</strong> · Article generated by AI
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+  }
+
+  /**
+   * Render Table of Contents as email-safe HTML (inline styles only, no JS).
+   */
+  private renderTocHtml(items: { text: string; level: number }[]): string {
+    if (!items || items.length === 0) return '';
+
+    const rows = items
+      .map((item) => {
+        const indent = (item.level - 2) * 20;
+        const isH3 = item.level === 3;
+        return `
+        <tr>
+          <td style="padding:5px 0 5px ${indent}px;">
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding-right:10px;vertical-align:top;">
+                  <span style="font-size:${isH3 ? '10' : '12'}px;color:${isH3 ? '#94a3b8' : '#3b82f6'};">
+                    ${isH3 ? '◦' : '▸'}
+                  </span>
+                </td>
+                <td>
+                  <span style="font-size:${isH3 ? '13' : '14'}px;color:${isH3 ? '#64748b' : '#1e293b'};font-weight:${isH3 ? '400' : '500'};">
+                    ${this.escapeHtml(item.text)}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>`;
+      })
+      .join('');
 
     return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Blog Post Generated</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 5px 5px 0 0;
-    }
-    .content {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-top: none;
-    }
-    .detail-row {
-      margin-bottom: 15px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #eee;
-    }
-    .detail-label {
-      font-weight: bold;
-      color: #555;
-      margin-bottom: 5px;
-    }
-    .detail-value {
-      color: #333;
-    }
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 20px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #777;
-      font-size: 12px;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>New Blog Post Generated</h1>
-  </div>
-  <div class="content">
-    <p>A new blog post has been automatically generated and published on your blog platform.</p>
-    
-    <div class="detail-row">
-      <div class="detail-label">Blog Title:</div>
-      <div class="detail-value">${this.escapeHtml(blogDetails.title)}</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Blog ID:</div>
-      <div class="detail-value">#${blogDetails.id}</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Slug:</div>
-      <div class="detail-value">${this.escapeHtml(blogDetails.slug)}</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Excerpt:</div>
-      <div class="detail-value">${this.escapeHtml(blogDetails.excerpt)}</div>
-    </div>
-    
-    ${
-      blogDetails.topic
-        ? `
-    <div class="detail-row">
-      <div class="detail-label">Generated Topic:</div>
-      <div class="detail-value">${this.escapeHtml(blogDetails.topic)}</div>
-    </div>
-    `
-        : ''
-    }
-    
-    <div class="detail-row">
-      <div class="detail-label">Author:</div>
-      <div class="detail-value">${this.escapeHtml(blogDetails.author)}</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Published At:</div>
-      <div class="detail-value">${publishedDate}</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Reading Time:</div>
-      <div class="detail-value">${blogDetails.readingTime} minutes</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">Word Count:</div>
-      <div class="detail-value">${blogDetails.wordCount.toLocaleString()} words</div>
-    </div>
-    
-    <div class="detail-row">
-      <div class="detail-label">FAQs Included:</div>
-      <div class="detail-value">${blogDetails.faqCount} FAQs</div>
-    </div>
-    
-    <a href="${baseUrl}/blog/${blogDetails.slug}" class="button">View Blog Post</a>
-  </div>
-  
-  <div class="footer">
-    <p>This is an automated notification from ${appName}</p>
-    <p>Blog post was automatically generated by AI</p>
-  </div>
-</body>
-</html>
-    `.trim();
+    <!-- Table of Contents -->
+    <table width="100%" cellpadding="0" cellspacing="0"
+           style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:28px;">
+      <tr>
+        <td style="padding:20px 24px;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="padding-bottom:14px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">
+                <table cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="padding-right:8px;font-size:16px;">📋</td>
+                    <td style="font-size:14px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:1px;">
+                      Table of Contents
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            ${rows}
+          </table>
+        </td>
+      </tr>
+    </table>`;
   }
 
   /**
@@ -288,35 +342,41 @@ export class EmailService {
     wordCount: number;
     faqCount: number;
     topic?: string;
+    tableOfContents?: { text: string; level: number }[];
   }): string {
     const publishedDate = new Date(blogDetails.publishedAt).toLocaleString();
-    const appName = this.configService.get<string>('APP_NAME', 'Blog Platform');
-    const baseUrl = this.configService.get<string>(
-      'APP_URL',
-      'http://localhost:3000',
-    );
+    const appName = this.configService.get<string>('SITE_NAME', 'Blog Platform');
+    const baseUrl = this.configService.get<string>('SITE_URL', 'http://localhost:3000');
+
+    const tocText =
+      blogDetails.tableOfContents && blogDetails.tableOfContents.length > 0
+        ? `\nTable of Contents\n${'─'.repeat(30)}\n${blogDetails.tableOfContents
+            .map((item) => {
+              const indent = ' '.repeat((item.level - 2) * 4);
+              const bullet = item.level === 2 ? '▸' : '◦';
+              return `${indent}${bullet} ${item.text}`;
+            })
+            .join('\n')}\n`
+        : '';
 
     return `
-New Blog Post Generated
+New Article Published: ${blogDetails.title}
 
-A new blog post has been automatically generated and published on your blog platform.
+${blogDetails.excerpt}
+${blogDetails.topic ? `\nTopic: ${blogDetails.topic}` : ''}
+${tocText}
+Author:       ${blogDetails.author}
+Published:    ${publishedDate}
+Reading time: ${blogDetails.readingTime} min
+Word count:   ${blogDetails.wordCount.toLocaleString()} words
+FAQs:         ${blogDetails.faqCount}
+Post ID:      #${blogDetails.id}
 
-Blog Title: ${blogDetails.title}
-Blog ID: #${blogDetails.id}
-Slug: ${blogDetails.slug}
-Excerpt: ${blogDetails.excerpt}
-${blogDetails.topic ? `Generated Topic: ${blogDetails.topic}\n` : ''}
-Author: ${blogDetails.author}
-Published At: ${publishedDate}
-Reading Time: ${blogDetails.readingTime} minutes
-Word Count: ${blogDetails.wordCount.toLocaleString()} words
-FAQs Included: ${blogDetails.faqCount} FAQs
-
-View the blog post: ${baseUrl}/blog/${blogDetails.slug}
+Read the full article:
+${baseUrl}/blog/${blogDetails.slug}
 
 ---
-This is an automated notification from ${appName}
-Blog post was automatically generated by AI
+Automated notification from ${appName} · Article generated by AI
     `.trim();
   }
 

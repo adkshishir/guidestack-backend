@@ -260,6 +260,9 @@ export class BlogGenerationService {
 
       // Send email notification to admin
       try {
+        const tableOfContents = this.extractTableOfContents(
+          blogPackage.content.html,
+        );
         await this.emailService.sendBlogGenerationNotification({
           id: savedPost.id,
           title: savedPost.title,
@@ -271,6 +274,7 @@ export class BlogGenerationService {
           wordCount,
           faqCount,
           topic: baseTopic || undefined,
+          tableOfContents,
         });
         this.logger.log('Email notification sent to admin');
       } catch (error) {
@@ -597,6 +601,29 @@ export class BlogGenerationService {
       .replace(/\s+/g, ' ')
       .trim();
     return text.split(' ').filter((word) => word.length > 0).length;
+  }
+
+  /**
+   * Extract h2 and h3 headings from HTML to build a Table of Contents.
+   * Mirrors the same parsing logic used by the frontend TableOfContents component.
+   */
+  private extractTableOfContents(
+    html: string,
+  ): { text: string; level: number }[] {
+    const items: { text: string; level: number }[] = [];
+    const headingRegex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
+    let match: RegExpExecArray | null;
+
+    while ((match = headingRegex.exec(html)) !== null) {
+      const level = parseInt(match[1], 10);
+      // Strip any nested HTML tags inside the heading (e.g. <strong>, <code>)
+      const text = match[2].replace(/<[^>]*>/g, '').trim();
+      if (text) {
+        items.push({ text, level });
+      }
+    }
+
+    return items;
   }
 
   /**
