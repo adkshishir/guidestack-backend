@@ -29,6 +29,7 @@ import {
 import { BlogService } from './blog.service';
 import { BlogSchedulerService } from './blog-scheduler.service';
 import { BlogTaskService } from './blog-task.service';
+import { IntelligentBlogGenerationService } from './intelligent-blog-generation.service';
 import { CreateBlogTaskDto } from './dto/create-blog-task.dto';
 import { UpdateBlogTaskDto } from './dto/update-blog-task.dto';
 import { BlogTask } from './entities/blog-task.entity';
@@ -52,6 +53,7 @@ export class BlogController {
     private readonly blogService: BlogService,
     private readonly blogSchedulerService: BlogSchedulerService,
     private readonly blogTaskService: BlogTaskService,
+    private readonly intelligentBlogGenerationService: IntelligentBlogGenerationService,
   ) {}
 
   @Post()
@@ -342,6 +344,32 @@ export class BlogController {
     return this.blogSchedulerService.generateBlogManually(
       generateBlogDto.topic,
     );
+  }
+
+  @Post('auto-generate')
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Auto-generate a blog post (fully automatic)',
+    description:
+      'Triggers fully automatic, intelligent blog generation. No body required. ' +
+      'The system analyzes existing content and category distribution, then picks ' +
+      'the best topic, category, and tags automatically before generating the post with AI.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Blog generated successfully',
+    type: BlogPost,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request - auto blog generation failed',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({
+    description: 'Forbidden - Admin or Editor role required',
+  })
+  async autoGenerateBlog(): Promise<BlogPost> {
+    return this.intelligentBlogGenerationService.generateIntelligentBlog();
   }
 
   // Blog Task endpoints - MUST be before @Post('generate') and other routes to avoid conflicts
