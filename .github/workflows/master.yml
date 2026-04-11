@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - master
+      - mmainr
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/projects/guide-stack/backend
-            git pull origin master
+            git pull origin main
             npm ci --legacy-peer-deps
             npm run build
             pm2 restart api.guidestack
