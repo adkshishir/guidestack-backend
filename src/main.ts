@@ -16,8 +16,8 @@ async function bootstrap() {
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:8080',
-        'https://guidestack.adhikarishishir.com.np',
-        'http://guidestack.adhikarishishir.com.np',
+        'https://wealthalgor.com',
+        'https://www.wealthalgor.com',
       ];
 
   app.enableCors({

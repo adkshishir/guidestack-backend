@@ -222,7 +222,7 @@ export class NewsletterService {
    * Send verification email
    */
   private async sendVerificationEmail(subscriber: Subscriber): Promise<void> {
-    const appName = this.configService.get<string>('APP_NAME', 'GuideStack');
+    const appName = this.configService.get<string>('APP_NAME', 'WealthAlgor');
     const frontendUrl = this.configService.get<string>(
       'FRONTEND_URL',
       'https://wealthalgor.com',
@@ -243,7 +243,7 @@ export class NewsletterService {
    * Send welcome email after verification
    */
   private async sendWelcomeEmail(subscriber: Subscriber): Promise<void> {
-    const appName = this.configService.get<string>('APP_NAME', 'GuideStack');
+    const appName = this.configService.get<string>('APP_NAME', 'WealthAlgor');
     const frontendUrl = this.configService.get<string>(
       'FRONTEND_URL',
       'https://wealthalgor.com',

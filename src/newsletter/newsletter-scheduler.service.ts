@@ -117,7 +117,7 @@ export class NewsletterSchedulerService {
     post: BlogPost,
   ): Promise<void> {
     try {
-      const appName = this.configService.get<string>('APP_NAME', 'GuideStack');
+      const appName = this.configService.get<string>('APP_NAME', 'WealthAlgor');
       const frontendUrl = this.configService.get<string>(
         'FRONTEND_URL',
         'https://wealthalgor.com',
@@ -165,7 +165,7 @@ export class NewsletterSchedulerService {
       post.featuredImage?.url || `${frontendUrl}/placeholder.svg`;
 
     const excerpt = post.excerpt || post.title;
-    const authorName = post.author?.email?.split('@')[0] || 'GuideStack Team';
+    const authorName = post.author?.email?.split('@')[0] || 'WealthAlgor Team';
     const categoryName = post.blogCategories?.[0]?.category?.name || 'Article';
     const readingTime =
       post.readingTime ||

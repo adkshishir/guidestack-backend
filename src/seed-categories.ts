@@ -1,9 +1,17 @@
 /**
- * SEO-Optimized Niche Category & Tag Seed Data
+ * SEO-Optimized Robo-Advisor Category & Tag Seed Data
  *
- * Strategy: Focus on high-search-volume, evergreen "how-to" and informational
- * content niches. Each category targets a content cluster that Google rewards
- * with topical authority when you publish deep, step-by-step guides.
+ * Strategy: WealthAlgor covers one vertical — automated/robo investing —
+ * across four content pillars, each with three sub-niches sized to rank
+ * against long-tail, low-competition queries the major finance-media
+ * incumbents (NerdWallet, Forbes Advisor, Bankrate, SmartAsset) leave thin:
+ * interactive tools, mechanics explainers, and persona/behavioral angles
+ * rather than another "best robo-advisor" listicle.
+ *
+ * Scope: primarily US robo-advisor platforms, with UK/Canada/Australia
+ * platforms woven into the same sub-niches (not forked into separate
+ * country categories) since those are the other markets where robo-advisors
+ * and their affiliate programs actually exist.
  *
  * Usage: Import SEED_CATEGORIES and getAllSeedTags() in your bootstrap or
  * a dedicated seeder service to populate the database.
@@ -25,324 +33,191 @@ export interface SeedCategory {
 
 export const SEED_CATEGORIES: SeedCategory[] = [
   {
-    name: 'Software Development',
-    slug: 'software-development',
+    name: 'Robo-Advisor Comparisons',
+    slug: 'robo-advisor-comparisons',
     description:
-      'Step-by-step tutorials, best practices, and deep dives into modern software engineering.',
+      'Head-to-head robo-advisor comparisons, persona-fit picks, and true fee breakdowns across the platforms that matter in 2026.',
     children: [
       {
-        name: 'Web Development',
-        slug: 'web-development',
+        name: 'Head-to-Head Match-ups',
+        slug: 'head-to-head-matchups',
         description:
-          'Frontend and backend web development tutorials with practical code examples.',
+          'Exhaustive single-pair robo-advisor breakdowns — the "X vs Y" decisions the big roundup sites cover in a single paragraph.',
         tags: [
-          'React',
-          'Next.js',
-          'Node.js',
-          'TypeScript',
-          'CSS',
-          'HTML',
-          'JavaScript',
-          'REST API',
-          'GraphQL',
+          'Betterment',
+          'Wealthfront',
+          'M1 Finance',
+          'Schwab Intelligent Portfolios',
+          'Vanguard Digital Advisor',
+          'Fidelity Go',
+          'Wealthsimple',
+          'Nutmeg',
         ],
       },
       {
-        name: 'Mobile App Development',
-        slug: 'mobile-app-development',
+        name: 'Persona Fit',
+        slug: 'persona-fit',
         description:
-          'Build mobile apps from scratch with step-by-step guides for iOS and Android.',
+          '"Best for X" robo-advisor guides for beginners, retirees, the self-employed, small balances, and high-net-worth investors.',
         tags: [
-          'React Native',
-          'Flutter',
-          'Swift',
-          'Kotlin',
-          'Mobile UI',
-          'App Store',
+          'Robo-Advisor for Beginners',
+          'Robo-Advisor for Retirees',
+          'Small Balance Investing',
+          'Self-Employed Investing',
+          'High Net Worth Robo-Advisors',
         ],
       },
       {
-        name: 'DevOps & Cloud',
-        slug: 'devops-cloud',
+        name: 'Fees & Fine Print',
+        slug: 'fees-and-fine-print',
         description:
-          'CI/CD pipelines, cloud infrastructure, containerization, and deployment guides.',
+          'The real dollar impact of management fees, account minimums, and the costs that only show up after you sign up.',
         tags: [
-          'Docker',
-          'Kubernetes',
-          'AWS',
-          'CI/CD',
-          'Linux',
-          'Terraform',
-          'GitHub Actions',
-        ],
-      },
-      {
-        name: 'Database & Backend',
-        slug: 'database-backend',
-        description:
-          'Database design, optimization, and backend architecture tutorials.',
-        tags: [
-          'PostgreSQL',
-          'MongoDB',
-          'Redis',
-          'SQL',
-          'Database Design',
-          'Microservices',
+          'Management Fees',
+          'AUM Fees',
+          'Account Minimums',
+          'Hidden Costs',
+          'Fee Comparison',
+          'Expense Ratios',
         ],
       },
     ],
   },
   {
-    name: 'Artificial Intelligence',
-    slug: 'artificial-intelligence',
+    name: 'Automated Investing Mechanics',
+    slug: 'automated-investing-mechanics',
     description:
-      'Practical AI guides — from machine learning fundamentals to building production AI systems.',
+      'The math behind robo-advisor portfolios — tax-loss harvesting, rebalancing algorithms, and retirement drawdown planning explained in plain language.',
     children: [
       {
-        name: 'Machine Learning',
-        slug: 'machine-learning',
+        name: 'Tax-Loss Harvesting',
+        slug: 'tax-loss-harvesting',
         description:
-          'Learn machine learning concepts and build models with step-by-step tutorials.',
+          'How automated tax-loss harvesting actually works — wash-sale rules, direct indexing, and what it is worth to you.',
         tags: [
-          'Python',
-          'TensorFlow',
-          'PyTorch',
-          'Scikit-learn',
-          'Neural Networks',
-          'Data Science',
+          'Tax-Loss Harvesting',
+          'Direct Indexing',
+          'Wash Sale Rule',
+          'Tax Alpha',
+          'Capital Gains Tax',
         ],
       },
       {
-        name: 'AI Tools & Automation',
-        slug: 'ai-tools-automation',
+        name: 'Portfolio Construction & Rebalancing',
+        slug: 'portfolio-rebalancing',
         description:
-          'How to use AI tools to automate tasks, boost productivity, and build smarter workflows.',
+          'How robo-advisors set your allocation and decide when to trade — threshold-based vs. calendar-based rebalancing.',
         tags: [
-          'ChatGPT',
-          'Claude',
-          'AI Automation',
-          'Prompt Engineering',
-          'AI Agents',
-          'LLM',
+          'Asset Allocation',
+          'Rebalancing Threshold',
+          'Modern Portfolio Theory',
+          'Risk Tolerance',
+          'ETF Portfolios',
         ],
       },
       {
-        name: 'Computer Vision',
-        slug: 'computer-vision',
+        name: 'Goal-Based & Retirement Drawdown',
+        slug: 'retirement-drawdown',
         description:
-          'Image recognition, object detection, and visual AI implementation guides.',
+          'Planning the decumulation phase — safe withdrawal rates and drawdown strategy for a robo-managed retirement account.',
         tags: [
-          'OpenCV',
-          'Image Processing',
-          'Object Detection',
-          'OCR',
-          'Deep Learning',
-        ],
-      },
-      {
-        name: 'Natural Language Processing',
-        slug: 'natural-language-processing',
-        description:
-          'Text analysis, chatbots, sentiment analysis, and NLP application tutorials.',
-        tags: [
-          'NLP',
-          'Text Mining',
-          'Sentiment Analysis',
-          'Chatbot Development',
-          'Transformers',
+          'Retirement Planning',
+          'Drawdown Strategy',
+          'Safe Withdrawal Rate',
+          'Goal-Based Investing',
+          'Decumulation',
         ],
       },
     ],
   },
   {
-    name: 'Cybersecurity',
-    slug: 'cybersecurity',
+    name: 'Alternatives & Hybrid Models',
+    slug: 'alternatives-and-hybrid-models',
     description:
-      'Protect your systems, data, and privacy with actionable security guides.',
+      "When a pure robo-advisor isn't the right fit — hybrid human-plus-algorithm services, ESG portfolios, and honest DIY-vs-robo comparisons.",
     children: [
       {
-        name: 'Network Security',
-        slug: 'network-security',
+        name: 'Hybrid Robo + Human Advisors',
+        slug: 'hybrid-robo-human-advisors',
         description:
-          'Firewalls, VPNs, intrusion detection, and network hardening step-by-step guides.',
+          'Services that blend an algorithm with on-demand access to a certified financial planner, and what that access actually costs.',
         tags: [
-          'Firewall',
-          'VPN',
-          'Network Monitoring',
-          'Penetration Testing',
-          'Zero Trust',
+          'Hybrid Advisor',
+          'SigFig',
+          'Vanguard Personal Advisor',
+          'SoFi Invest',
+          'Certified Financial Planner',
+          'AUM Advisory Fee',
         ],
       },
       {
-        name: 'Application Security',
-        slug: 'application-security',
+        name: 'ESG & Values-Based Investing',
+        slug: 'esg-values-based-investing',
         description:
-          'Secure coding practices, vulnerability prevention, and security testing tutorials.',
+          'What robo-advisor ESG and sustainable portfolios actually hold, beyond the marketing label.',
         tags: [
-          'OWASP',
-          'Secure Coding',
-          'Authentication',
-          'Encryption',
-          'API Security',
+          'ESG Investing',
+          'Sustainable Portfolios',
+          'Ellevest',
+          'Socially Responsible Investing',
+          'Impact Investing',
         ],
       },
       {
-        name: 'Privacy & Data Protection',
-        slug: 'privacy-data-protection',
+        name: 'DIY Index Investing vs Robo',
+        slug: 'diy-vs-robo-investing',
         description:
-          'Data privacy best practices, compliance guides, and personal security tips.',
+          'The "just buy the index fund yourself" debate — an honest look at when DIY beats automation and when it does not.',
         tags: [
-          'GDPR',
-          'Data Privacy',
-          'Password Management',
-          'Two-Factor Auth',
-          'Data Breach',
-        ],
-      },
-    ],
-  },
-  {
-    name: 'Personal Finance',
-    slug: 'personal-finance',
-    description:
-      'Actionable financial guides to build wealth, manage money, and invest smartly.',
-    children: [
-      {
-        name: 'Investing',
-        slug: 'investing',
-        description:
-          'Stock market, ETFs, crypto, and investment strategy guides for beginners to advanced.',
-        tags: [
-          'Stock Market',
-          'ETF',
           'Index Funds',
-          'Cryptocurrency',
-          'Portfolio Management',
-          'Dividends',
-        ],
-      },
-      {
-        name: 'Budgeting & Saving',
-        slug: 'budgeting-saving',
-        description:
-          'Practical budgeting methods, saving strategies, and financial planning tutorials.',
-        tags: [
-          'Budget Planning',
-          'Emergency Fund',
-          'Debt Management',
-          'Frugal Living',
-          'Financial Goals',
-        ],
-      },
-      {
-        name: 'Side Income & Freelancing',
-        slug: 'side-income-freelancing',
-        description:
-          'How to earn extra income through freelancing, side projects, and online businesses.',
-        tags: [
-          'Freelancing',
-          'Passive Income',
-          'Side Hustle',
-          'Remote Work',
-          'Online Business',
+          'DIY Investing',
+          'Bogleheads',
+          'Three-Fund Portfolio',
+          'Robo-Advisor Alternatives',
         ],
       },
     ],
   },
   {
-    name: 'Productivity & Tools',
-    slug: 'productivity-tools',
+    name: 'Automated Money Habits',
+    slug: 'automated-money-habits',
     description:
-      'Master your workflow with guides on tools, systems, and productivity frameworks.',
+      'The behavioral side of automated investing — spare-change round-ups, dollar-cost averaging, and what first-time investors actually need to know.',
     children: [
       {
-        name: 'Developer Tools',
-        slug: 'developer-tools',
+        name: 'Round-Up & Spare-Change Investing',
+        slug: 'round-up-investing',
         description:
-          'IDE setup, CLI tools, debugging, and developer environment optimization guides.',
+          'Does spare-change investing actually build wealth, or is it a gimmick? A realistic look at round-up mechanics.',
         tags: [
-          'VS Code',
-          'Git',
-          'Terminal',
-          'Debugging',
-          'Code Editor',
-          'Chrome DevTools',
+          'Round-Up Investing',
+          'Acorns',
+          'Spare Change Investing',
+          'Micro-Investing',
         ],
       },
       {
-        name: 'Workflow Automation',
-        slug: 'workflow-automation',
+        name: 'Dollar-Cost Averaging Automation',
+        slug: 'dollar-cost-averaging',
         description:
-          'Automate repetitive tasks with scripts, tools, and integration platforms.',
+          'Turning off manual buy/sell decisions with recurring auto-deposits, and how that compares to investing a lump sum.',
         tags: [
-          'Zapier',
-          'Make',
-          'Shell Scripts',
-          'Cron Jobs',
-          'Task Automation',
-          'No-Code',
+          'Dollar-Cost Averaging',
+          'Automatic Investing',
+          'Recurring Deposits',
+          'Lump Sum vs DCA',
         ],
       },
       {
-        name: 'Project Management',
-        slug: 'project-management',
+        name: 'First-Time Investor Onboarding',
+        slug: 'first-time-investor-onboarding',
         description:
-          'Agile, Scrum, Kanban, and project management methodologies explained step by step.',
+          'The real anxieties of handing money to an algorithm for the first time — safety, insurance, and what happens if the market drops.',
         tags: [
-          'Agile',
-          'Scrum',
-          'Kanban',
-          'Jira',
-          'Team Collaboration',
-          'Sprint Planning',
-        ],
-      },
-    ],
-  },
-  {
-    name: 'Career & Growth',
-    slug: 'career-growth',
-    description:
-      'Level up your tech career with interview prep, skill building, and career strategy guides.',
-    children: [
-      {
-        name: 'Interview Preparation',
-        slug: 'interview-preparation',
-        description:
-          'Coding interview prep, system design, behavioral questions, and resume tips.',
-        tags: [
-          'Coding Interview',
-          'System Design',
-          'Data Structures',
-          'Algorithms',
-          'Resume',
-          'LeetCode',
-        ],
-      },
-      {
-        name: 'Skill Development',
-        slug: 'skill-development',
-        description:
-          'Learning paths, certifications, and skill-building strategies for tech professionals.',
-        tags: [
-          'Online Courses',
-          'Certifications',
-          'Learning Path',
-          'Tech Skills',
-          'Self-Learning',
-        ],
-      },
-      {
-        name: 'Tech Industry Insights',
-        slug: 'tech-industry-insights',
-        description:
-          'Salary guides, job market trends, and career advice for the tech industry.',
-        tags: [
-          'Tech Salary',
-          'Job Market',
-          'Remote Work',
-          'Startup',
-          'Tech Trends',
+          'Investing for Beginners',
+          'SIPC Insurance',
+          'Risk Tolerance Quiz',
+          'Is Investing Safe',
         ],
       },
     ],

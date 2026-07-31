@@ -16,17 +16,17 @@ interface SeedUser {
 
 const SEED_USERS: SeedUser[] = [
   {
-    email: 'admin@guidestack.com',
+    email: 'admin@wealthalgor.com',
     password: 'Admin@123',
     role: UserRole.ADMIN,
   },
   {
-    email: 'editor@guidestack.com',
+    email: 'editor@wealthalgor.com',
     password: 'Editor@123',
     role: UserRole.EDITOR,
   },
   {
-    email: 'author@guidestack.com',
+    email: 'author@wealthalgor.com',
     password: 'Author@123',
     role: UserRole.AUTHOR,
   },

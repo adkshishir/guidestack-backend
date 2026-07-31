@@ -58,7 +58,7 @@ export class AuthService {
   async generateTwoFactorSecret(user: User) {
     const secret = speakeasy.generateSecret({
       name: user.email,
-      issuer: 'GuideStack',
+      issuer: 'WealthAlgor',
     });
 
     if (!secret.otpauth_url) {
