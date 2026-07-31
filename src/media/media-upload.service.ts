@@ -22,9 +22,10 @@ export class MediaUploadService {
     @InjectRepository(Media)
     private mediaRepository: Repository<Media>,
   ) {
-    // Get base URL for media files (Frontend URL for static files)
+    // Uploads are served statically by this API (see MediaModule's
+    // ServeStaticModule), not by the frontend, so the URL must point here.
     this.baseUrl =
-      this.configService.get<string>('FRONTEND_URL')?.split(',')[0] ||
+      this.configService.get<string>('API_URL')?.split(',')[0] ||
       'https://api.wealthalgor.com';
   }
 
