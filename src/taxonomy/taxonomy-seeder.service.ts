@@ -50,15 +50,11 @@ export class TaxonomySeederService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     await this.seedUsers();
 
-    const categoryCount = await this.categoryRepository.count();
-    if (categoryCount > 0) {
-      this.logger.log(
-        `Skipping category seed: ${categoryCount} categories already exist.`,
-      );
-      return;
-    }
-
-    this.logger.log('No categories found. Seeding niche categories and tags...');
+    // seed() is idempotent — it looks up every tag/category/link by slug
+    // before creating anything — so it's safe (and necessary) to run on
+    // every boot. This is what lets SEED_CATEGORIES additions in code
+    // actually reach the database instead of only applying on a
+    // brand-new, empty install.
     await this.seed();
   }
 

@@ -315,7 +315,7 @@ export class BlogGenerationService {
     }
 
     parts.push(
-      `\nIMPORTANT: This must be a step-by-step, actionable guide. Include real examples, specific tool names, exact commands or settings, and common mistakes. The reader should be able to follow this guide and achieve a concrete result.`,
+      `\nIMPORTANT: This must be a concrete, actionable article — a comparison, mechanics explainer, or how-to depending on the topic. Include real platform names, real numbers, and common mistakes. The reader should finish knowing exactly what to check or do next.`,
     );
 
     return parts.join('\n');
@@ -632,31 +632,26 @@ export class BlogGenerationService {
    */
   private generateRandomTopic(): string {
     const topics = [
-      'How to Set Up a Next.js Project with TypeScript and Tailwind CSS from Scratch',
-      'How to Deploy a Node.js App to AWS EC2 with Nginx and SSL',
-      'How to Build a REST API with NestJS and PostgreSQL Step by Step',
-      'How to Set Up Docker Compose for a Full-Stack Development Environment',
-      'How to Create a CI/CD Pipeline with GitHub Actions for a React App',
-      'How to Build a Personal Budget Tracker with Python and Google Sheets API',
-      'How to Set Up Two-Factor Authentication for All Your Online Accounts',
-      'How to Use ChatGPT API to Build a Custom AI Assistant',
-      'How to Optimize PostgreSQL Queries for Better Performance',
-      'How to Create a Responsive Dashboard with React and Recharts',
-      'How to Set Up a VPN Server on a Cloud Instance for Private Browsing',
-      'How to Build a Real-Time Chat Application with WebSockets and Node.js',
-      'How to Start Investing in Index Funds as a Complete Beginner',
-      'How to Automate Daily Tasks with Python Scripts and Cron Jobs',
-      'How to Prepare for a Software Engineering Interview in 30 Days',
-      'How to Build and Deploy a Blog with Next.js and Markdown',
-      'How to Set Up Kubernetes Locally with Minikube for Development',
-      'How to Create a Machine Learning Model to Predict Stock Prices',
-      'How to Secure a Web Application Against the OWASP Top 10 Vulnerabilities',
-      'How to Build a Freelance Portfolio Website That Converts Clients',
-      'How to Use Git Branching Strategies for Team Collaboration',
-      'How to Set Up Monitoring and Alerts for a Production Application',
-      'How to Build a Chrome Extension from Scratch with JavaScript',
-      'How to Create an Automated Email Newsletter System with Node.js',
-      'How to Design a Database Schema for a Multi-Tenant SaaS Application',
+      'Betterment vs Wealthfront: Which Robo-Advisor Actually Costs Less in 2026',
+      'How Robo-Advisor Tax-Loss Harvesting Actually Works (And When It Doesn\'t Help)',
+      'Schwab Intelligent Portfolios: The Cash Allocation Trade-Off Explained',
+      'How to Read a Robo-Advisor Fee Schedule (What They Don\'t Put on the Homepage)',
+      'Robo-Advisor vs Target-Date Fund: Which Fits a Hands-Off Investor Better',
+      'How Round-Up Investing Apps Actually Invest Your Spare Change',
+      'Hybrid Robo-Advisors: When Paying for a Human Advisor Is Worth It',
+      'ESG Robo-Advisor Portfolios: How the Screening Actually Works',
+      'How Robo-Advisors Rebalance Your Portfolio (And How Often)',
+      'DIY Three-Fund Portfolio vs Robo-Advisor: Real Cost Comparison',
+      'Wealthfront vs Vanguard Digital Advisor: Fees, Minimums, and Features',
+      'How to Set Up Goal-Based Investing in a Robo-Advisor Account',
+      'Robo-Advisor Retirement Drawdown: How Automated Withdrawals Work',
+      'M1 Finance vs a True Robo-Advisor: What the Difference Actually Means',
+      'First-Time Investor: What to Check Before Opening a Robo-Advisor Account',
+      'Dollar-Cost Averaging Automation: Setting Up Recurring Robo-Advisor Deposits',
+      'How Robo-Advisors Handle Market Downturns (And What They Don\'t Tell You)',
+      'Direct Indexing vs Robo-Advisor Tax-Loss Harvesting: What\'s the Real Difference',
+      'Fidelity Go vs Betterment: Minimums, Fees, and Who Each One Fits',
+      'How to Move an Existing Portfolio Into a Robo-Advisor Without a Tax Hit',
     ];
 
     return topics[Math.floor(Math.random() * topics.length)];

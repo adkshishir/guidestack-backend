@@ -382,7 +382,15 @@ export class IntelligentBlogGenerationService {
     const categoryWithLeastBlogs = sortedByCount[0]?.categoryName || 'N/A';
 
     const prompt = `
-You are an SEO content strategist for a tech blog. Your job is to pick the next article topic that will rank well on Google and provide genuine value to readers.
+You are an SEO content strategist for WealthAlgor, a site focused on one vertical: robo-advisors and automated investing. Your job is to pick the next article topic that will rank well on Google and provide genuine value to readers evaluating or using automated investing platforms.
+
+WealthAlgor's four content pillars are:
+1. Robo-Advisor Comparisons — head-to-head match-ups, persona-fit picks ("best for X"), fee breakdowns.
+2. Automated Investing Mechanics — how tax-loss harvesting, rebalancing, and goal-based drawdown actually work under the hood.
+3. Alternatives & Hybrid Models — hybrid robo+human advisors, ESG/values-based investing, DIY index investing vs. robo.
+4. Automated Money Habits — round-up investing, dollar-cost averaging automation, first-time investor onboarding.
+
+Every topic MUST fall within one of these four pillars. Do not suggest general personal-finance, budgeting, or unrelated tech/career topics — that is off-niche for this site.
 
 EXISTING CONTENT (avoid duplicating these):
 ${analysis.titles.slice(0, 8).map((t) => `  - ${t}`).join('\n') || '  - No articles yet'}
@@ -405,9 +413,11 @@ ${tagsList}
 REQUIREMENTS:
 1. Pick the most underserved category to build topical authority evenly.
 2. Suggest a SPECIFIC, ACTIONABLE topic in "How to..." format.
-   Good: "How to Set Up Automated Database Backups with pg_dump and Cron"
-   Bad: "Database Backup Best Practices" (too vague)
-3. The topic must target a long-tail keyword real people search for.
+   Good: "How to Calculate Betterment's Real Fee on a $50k Portfolio (Including Hidden Costs)"
+   Bad: "Robo-Advisor Fees Explained" (too vague, no specific angle)
+3. The topic must target a long-tail keyword real people search for — the kind of specific
+   question someone types when they're actually comparing platforms or trying to understand
+   a mechanic, not a broad head-term already dominated by NerdWallet/Forbes Advisor/Bankrate.
 4. It must NOT overlap with existing titles listed above.
 5. Pick tags that match the topic naturally.
 
