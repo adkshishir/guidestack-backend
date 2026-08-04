@@ -33,8 +33,11 @@ export class ImageGenerationService {
     @InjectRepository(BlogPost)
     private blogPostRepository: Repository<BlogPost>,
   ) {
+    // Generated images are written to this API's public/uploads and served
+    // statically by it (see MediaModule's ServeStaticModule) — same as
+    // MediaUploadService. Using FRONTEND_URL here produced 404 image URLs.
     this.baseUrl =
-      this.configService.get<string>('FRONTEND_URL')?.split(',')[0] ||
+      this.configService.get<string>('API_URL')?.split(',')[0] ||
       'https://api.wealthalgor.com';
 
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');

@@ -16,6 +16,7 @@ import { Tag } from '../taxonomy/entities/tag.entity';
 import { BlogCategory } from '../taxonomy/entities/blog-category.entity';
 import { BlogTag } from '../taxonomy/entities/blog-tag.entity';
 import { BlogAnalytics } from './entities/blog-analytics.entity';
+import { Media } from '../media/entities/media.entity';
 
 @Injectable()
 export class BlogService {
@@ -535,6 +536,12 @@ export class BlogService {
     }
     if (updateBlogDto.featuredImageId !== undefined) {
       blogPost.featuredImageId = updateBlogDto.featuredImageId;
+      // findOne() loads the featuredImage relation, and on save TypeORM derives
+      // the FK from that loaded object — silently reverting the id set above.
+      // Set the relation too so both agree, or the update is a no-op.
+      blogPost.featuredImage = updateBlogDto.featuredImageId
+        ? ({ id: updateBlogDto.featuredImageId } as Media)
+        : (null as unknown as Media);
     }
     if (updateBlogDto.language !== undefined) {
       blogPost.language = updateBlogDto.language;
